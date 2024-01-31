@@ -1,28 +1,34 @@
 //See https://learn.microsoft.com/en-us/azure/storage/queues/storage-quickstart-queues-dotnet
 
-using Azure;
+//#define PASSWORDLESS
+
+#if PASSWORDLESS
 using Azure.Identity;
+#endif
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
-using System;
-using System.Threading.Tasks;
+
 
 Console.WriteLine("Azure Queue Storage client library - .NET quickstart sample");
-
-// Quickstart code goes here
-// Retrieve the connection string for use with the application. The storage
-// connection string is stored in an environment variable called
-// AZURE_STORAGE_CONNECTION_STRING on the machine running the application.
-// If the environment variable is created after the application is launched
-// in a console or with Visual Studio, the shell or application needs to be
-// closed and reloaded to take the environment variable into account.
-string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
 
 // Create a unique name for the queue
 string queueName = "quickstartqueues-" + Guid.NewGuid().ToString();
 
+
+#if PASSWORDLESS
+string? storageAccountName = Environment.GetEnvironmentVariable("AZURE_STORAGE_ACCOUNT");
+
+// Instantiate a QueueClient to create and interact with the queue
+QueueClient queueClient = new QueueClient(
+    new Uri($"https://{storageAccountName}.queue.core.windows.net/{queueName}"),
+    new DefaultAzureCredential());
+#else
+string? connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
 // Instantiate a QueueClient to create and interact with the queue
 QueueClient queueClient = new QueueClient(connectionString, queueName);
+#endif
+
 Console.WriteLine($"Creating queue: {queueName}");
 
 // Create the queue
@@ -59,7 +65,7 @@ QueueProperties properties = queueClient.GetProperties();
 int cachedMessagesCount = properties.ApproximateMessagesCount;
 
 // Display number of messages
-Console.WriteLine($"Number of messages in queue: {cachedMessagesCount}");
+Console.WriteLine($"\nNumber of messages in queue: {cachedMessagesCount}");
 
 Console.WriteLine("\nReceiving messages from the queue...");
 
