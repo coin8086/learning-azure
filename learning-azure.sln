@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceBusQueue", "ServiceB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBQueuePerformance", "ServiceBusQueue\SBQueuePerformance\SBQueuePerformance.csproj", "{4A98990B-3794-4CB2-A326-F403E3C30232}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBQueueReceiver", "ServiceBusQueue\SBQueueReceiver\SBQueueReceiver.csproj", "{6599F8FC-A3DC-4E00-8FD9-32E8ACE2251A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBQueueProcessor", "ServiceBusQueue\SBQueueProcessor\SBQueueProcessor.csproj", "{6599F8FC-A3DC-4E00-8FD9-32E8ACE2251A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBQueueSender", "ServiceBusQueue\SBQueueSender\SBQueueSender.csproj", "{CDD6D88B-8FD9-4DB7-B1E3-68F76CA0547F}"
 EndProject
