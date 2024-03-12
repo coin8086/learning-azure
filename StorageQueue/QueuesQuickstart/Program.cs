@@ -86,6 +86,11 @@ foreach (QueueMessage message in messages)
     await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
 }
 
+Console.WriteLine("\nReceiving messages in batch...");
+
+messages = await queueClient.ReceiveMessagesAsync(10);
+Console.WriteLine($"Get {messages.Length} messages.");
+
 Console.WriteLine("\nPress Enter key to delete the queue...");
 Console.ReadLine();
 

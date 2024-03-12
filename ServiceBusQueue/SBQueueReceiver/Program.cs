@@ -34,3 +34,20 @@ await receiver.RenewMessageLockAsync(receivedMessage);
 
 // complete the message, thereby deleting it from the service
 await receiver.CompleteMessageAsync(receivedMessage);
+
+// Receive messages in batch
+
+Console.WriteLine("Try to receive more messages in batch...");
+//await sender.SendMessageAsync(new ServiceBusMessage("Hello!"));
+//await sender.SendMessageAsync(new ServiceBusMessage("World!"));
+
+var messages = await receiver.ReceiveMessagesAsync(10, TimeSpan.MaxValue);
+Console.WriteLine($"Received in batch: {messages.Count} messages.");
+
+var tasks = new Task[messages.Count];
+for (var i = 0; i < messages.Count; i++)
+{
+    Console.WriteLine(messages[i].Body.ToString());
+    tasks[i] = receiver.CompleteMessageAsync(messages[i]);
+}
+await Task.WhenAll(tasks);
