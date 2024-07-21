@@ -1,8 +1,10 @@
 param vmSize string = 'Standard_DS2_v2'
+//NOTE: the Dependency Extension doesn't support newer version of Ubuntu. So
+//Ubuntu 20.04 is used here. It's the latest supported version for the extension.
 param vmImage object = {
   publisher: 'Canonical'
-  offer: '0001-com-ubuntu-server-jammy'
-  sku: '22_04-lts-gen2'
+  offer: '0001-com-ubuntu-server-focal'
+  sku: '20_04-lts'
   version: 'latest'
 }
 param vmCount int = 2
