@@ -1,3 +1,3 @@
-Learning Azure
+# Learning Azure
 
 Learn Azure by examples.
