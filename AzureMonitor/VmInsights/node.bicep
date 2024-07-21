@@ -1,6 +1,9 @@
 param name string
 param subnetResId string
 param vmSize string
+param vmImage object
+param isLinux bool
+param vmDiskSizeInGB int = 64
 param userName string
 @secure()
 param password string
@@ -52,16 +55,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
       adminPassword: password
     }
     storageProfile: {
-      imageReference: {
-        publisher: 'Canonical'
-        offer: '0001-com-ubuntu-server-jammy'
-        sku: '22_04-lts-gen2'
-        version: 'latest'
-      }
+      imageReference: vmImage
       osDisk: {
         name: '${name}-osdisk'
         createOption: 'FromImage'
-        diskSizeGB: 64
+        diskSizeGB: vmDiskSizeInGB
         caching: 'ReadOnly'
         managedDisk: {
           storageAccountType: 'StandardSSD_LRS'
@@ -78,8 +76,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   }
 }
 
-module ama 'ama-linux.bicep' = if (setupAMA) {
-  name: 'ama'
+module linuxAMA 'ama-linux.bicep' = if (setupAMA && isLinux) {
+  name: 'linuxAMA'
+  params: {
+    dataCollectionRuleId: dataCollectionRuleId!
+    userAssignedManagedIdentity: userAssignedManagedIdentity!
+    vmName: vm.name
+  }
+}
+
+module windowsAMA 'ama-windows.bicep' = if (setupAMA && !isLinux) {
+  name: 'windowsAMA'
   params: {
     dataCollectionRuleId: dataCollectionRuleId!
     userAssignedManagedIdentity: userAssignedManagedIdentity!

@@ -1,4 +1,10 @@
 param vmSize string = 'Standard_DS2_v2'
+param vmImage object = {
+  publisher: 'Canonical'
+  offer: '0001-com-ubuntu-server-jammy'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
 param vmCount int = 2
 param userName string
 @secure()
@@ -42,6 +48,8 @@ module nodes 'node.bicep' = [for idx in range(1, vmCount): {
     name: 'node-${idx}'
     subnetResId: defaulSubnet.id
     vmSize: vmSize
+    vmImage: vmImage
+    isLinux: true
     userName: userName
     password: password
     dataCollectionRuleId: noPolicy ? monitor.outputs.dataCollectionRuleId : null
