@@ -4,8 +4,11 @@ param vmSize string
 param userName string
 @secure()
 param password string
+param dataCollectionRuleId string?
+param userAssignedManagedIdentity string?
 
 var location = resourceGroup().location
+var setupAMA = !empty(dataCollectionRuleId) && !empty(userAssignedManagedIdentity)
 
 resource ip 'Microsoft.Network/publicIPAddresses@2023-11-01' = {
   name: '${name}-ip'
@@ -72,5 +75,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
         }
       ]
     }
+  }
+}
+
+module ama 'ama-linux.bicep' = if (setupAMA) {
+  name: 'ama'
+  params: {
+    dataCollectionRuleId: dataCollectionRuleId!
+    userAssignedManagedIdentity: userAssignedManagedIdentity!
+    vmName: vm.name
   }
 }

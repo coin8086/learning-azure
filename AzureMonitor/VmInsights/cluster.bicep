@@ -4,10 +4,16 @@ param userName string
 @secure()
 param password string
 
+@description('By default, Azure Policy is used for setting up VM Insights.')
+param noPolicy bool = false
+
 var location = resourceGroup().location
 
-module monitor 'azure-monitor-policy.bicep' = {
+module monitor 'azure-monitor.bicep' = {
   name: 'monitor'
+  params: {
+    noPolicy: noPolicy
+  }
 }
 
 resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
@@ -38,6 +44,8 @@ module nodes 'node.bicep' = [for idx in range(1, vmCount): {
     vmSize: vmSize
     userName: userName
     password: password
+    dataCollectionRuleId: noPolicy ? monitor.outputs.dataCollectionRuleId : null
+    userAssignedManagedIdentity: noPolicy ? monitor.outputs.userManagedIdentityIdForMA : null
   }
   dependsOn: [
     monitor

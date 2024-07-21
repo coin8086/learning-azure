@@ -1,5 +1,6 @@
 param name string = 'monitor'
 param location string = resourceGroup().location
+param noPolicy bool = false
 
 var uniqStr = uniqueString(resourceGroup().id)
 var prefix = '${name}${uniqStr}'
@@ -22,30 +23,33 @@ resource userMiForMa 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-3
   location: location
 }
 
-resource userMiForVmPolicy 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userMiForVmPolicy 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!noPolicy) {
   name: '${prefix}-userMIForVmPolicy'
   location: location
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(userMiForVmPolicy.id, 'Contributor')
+//NOTE: Though resource/module can be conditonally deployed, their properties are alwalys validated (by ARM?)
+//as if they're going to be deployed. So we need to handle the situation with some dummy value to pass the validation.
+//That's why there're expressions like "noPolicy ? '' : ...".
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!noPolicy) {
+  name: guid(noPolicy ? '' : userMiForVmPolicy.id, 'Contributor')
   scope: resourceGroup()
   properties: {
     //Contributor role
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-    principalId: userMiForVmPolicy.properties.principalId
+    principalId: noPolicy ? '' : userMiForVmPolicy.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
 
-resource vmPolicyForMa 'Microsoft.Authorization/policyAssignments@2023-04-01' = {
+resource vmPolicyForMa 'Microsoft.Authorization/policyAssignments@2023-04-01' = if (!noPolicy) {
   name: '${prefix}-VMPolicyForMA'
   scope: resourceGroup()
   location: location
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${userMiForVmPolicy.id}': {}
+      '${noPolicy ? '' : userMiForVmPolicy.id}': {}
     }
   }
   properties: {
