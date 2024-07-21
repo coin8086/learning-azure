@@ -77,7 +77,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
 }
 
 module linuxAMA 'ama-linux.bicep' = if (setupAMA && isLinux) {
-  name: 'linuxAMA'
+  name: '${name}-linuxAMA'
   params: {
     dataCollectionRuleId: dataCollectionRuleId!
     userAssignedManagedIdentity: userAssignedManagedIdentity!
@@ -86,7 +86,7 @@ module linuxAMA 'ama-linux.bicep' = if (setupAMA && isLinux) {
 }
 
 module windowsAMA 'ama-windows.bicep' = if (setupAMA && !isLinux) {
-  name: 'windowsAMA'
+  name: '${name}-windowsAMA'
   params: {
     dataCollectionRuleId: dataCollectionRuleId!
     userAssignedManagedIdentity: userAssignedManagedIdentity!
