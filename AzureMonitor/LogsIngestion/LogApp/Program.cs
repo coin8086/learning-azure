@@ -10,14 +10,15 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // Initialize variables
-        var endpoint = new Uri("https://leiz-la-api-dev-sfty.southeastasia-1.ingest.monitor.azure.com");    //Your value
-        var ruleId = "dcr-7f42bbeef83b4d759d634e2b0daa11b4";    //Your value
+        //A URL like "https://xxx.ingest.monitor.azure.com"
+        var dceURL = Environment.GetEnvironmentVariable("LOGAPP_DCE") ?? throw new ArgumentException("Environment variable LOGAPP_DCE is not found!");
+        //An ID like "dcr-5b825a783cdf4dc58784040be0b18284"
+        var dcrID = Environment.GetEnvironmentVariable("LOGAPP_DCR") ?? throw new ArgumentException("Environment variable LOGAPP_DCR is not found!");
         var streamName = "Custom-MyTableRawData";
 
         // Create credential and client
         var credential = new DefaultAzureCredential();
-        LogsIngestionClient client = new(endpoint, credential);
+        LogsIngestionClient client = new(new Uri(dceURL), credential);
 
         DateTimeOffset currentTime = DateTimeOffset.UtcNow;
 
@@ -55,7 +56,7 @@ class Program
         // Upload logs
         try
         {
-            var response = await client.UploadAsync(ruleId, streamName, RequestContent.Create(data)).ConfigureAwait(false);
+            var response = await client.UploadAsync(dcrID, streamName, RequestContent.Create(data)).ConfigureAwait(false);
             if (response.IsError)
             {
                 throw new Exception(response.ToString());
@@ -92,7 +93,7 @@ class Program
         // Make the request
         try
         {
-            var response = await client.UploadAsync(ruleId, streamName, entries).ConfigureAwait(false);
+            var response = await client.UploadAsync(dcrID, streamName, entries).ConfigureAwait(false);
             if (response.IsError)
             {
                 throw new Exception(response.ToString());

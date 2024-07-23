@@ -3,6 +3,8 @@
     "LogApp": {
       "commandName": "Project",
       "environmentVariables": {
+        "LOGAPP_DCE": "",
+        "LOGAPP_DCR": "",
         "AZURE_TENANT_ID": "",
         "AZURE_CLIENT_ID": "",
         "AZURE_CLIENT_SECRET": ""
