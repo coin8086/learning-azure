@@ -1,7 +1,7 @@
 param vmName string
 param location string = resourceGroup().location
-param dataCollectionRuleId string
-param userAssignedManagedIdentity string
+param dcrResId string
+param userMiResId string
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' existing = {
   name: vmName
@@ -12,7 +12,7 @@ resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2019-
   name: '${vmName}-Dcr-Association'
   properties: {
     description: 'Association of data collection rule for VM Insights.'
-    dataCollectionRuleId: dataCollectionRuleId
+    dataCollectionRuleId: dcrResId
   }
 }
 
@@ -30,7 +30,7 @@ resource ma 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
       authentication: {
         managedIdentity: {
           'identifier-name': 'mi_res_id'
-          'identifier-value': userAssignedManagedIdentity
+          'identifier-value': userMiResId
         }
       }
     }

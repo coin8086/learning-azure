@@ -60,7 +60,7 @@ resource vmPolicyForMa 'Microsoft.Authorization/policyAssignments@2023-04-01' = 
       bringYourOwnUserAssignedManagedIdentity: { value: true }
       userAssignedManagedIdentityName: { value: userMiForMa.name }
       userAssignedManagedIdentityResourceGroup: { value: resourceGroup().name }
-      dcrResourceId: { value: dcr.outputs.dataCollectionRuleId }
+      dcrResourceId: { value: dcr.outputs.dcrResId }
     }
   }
   dependsOn: [
@@ -68,6 +68,6 @@ resource vmPolicyForMa 'Microsoft.Authorization/policyAssignments@2023-04-01' = 
   ]
 }
 
-output laWorkSpaceId string = workSpace.id
-output dataCollectionRuleId string = dcr.outputs.dataCollectionRuleId
-output userManagedIdentityIdForMA string = userMiForMa.id
+output workSpaceResId string = workSpace.id
+output dcrResId string = dcr.outputs.dcrResId
+output userMiResIdForAma string = userMiForMa.id

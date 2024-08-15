@@ -54,8 +54,8 @@ module nodes 'node.bicep' = [for idx in range(1, vmCount): {
     isLinux: true
     userName: userName
     password: password
-    dataCollectionRuleId: noPolicy ? monitor.outputs.dataCollectionRuleId : null
-    userAssignedManagedIdentity: noPolicy ? monitor.outputs.userManagedIdentityIdForMA : null
+    dcrResId: noPolicy ? monitor.outputs.dcrResId : null
+    userMiResId: noPolicy ? monitor.outputs.userMiResIdForAma : null
   }
   dependsOn: [
     monitor
