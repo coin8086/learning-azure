@@ -1,13 +1,8 @@
+type OsType = 'windows' | 'linux'
+
 param vmSize string = 'Standard_DS2_v2'
-//NOTE: the Dependency Extension doesn't support newer version of Ubuntu. So
-//Ubuntu 20.04 is used here. It's the latest supported version for the extension.
-param vmImage object = {
-  publisher: 'Canonical'
-  offer: '0001-com-ubuntu-server-focal'
-  sku: '20_04-lts'
-  version: 'latest'
-}
 param vmCount int = 2
+param vmOsType OsType = 'windows'
 param userName string
 @secure()
 param password string
@@ -16,6 +11,24 @@ param password string
 param noPolicy bool = false
 
 var location = resourceGroup().location
+var vmImageMap = {
+  windows: {
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2019-Datacenter'
+    version: 'latest'
+  }
+
+  //NOTE: the Dependency Extension doesn't support newer version of Ubuntu. So
+  //Ubuntu 20.04 is used here. It's the latest supported version for the extension.
+  linux: {
+    publisher: 'Canonical'
+    offer: '0001-com-ubuntu-server-focal'
+    sku: '20_04-lts'
+    version: 'latest'
+  }
+}
+var vmImage = vmImageMap[vmOsType]
 
 module monitor 'azure-monitor.bicep' = {
   name: 'monitor'

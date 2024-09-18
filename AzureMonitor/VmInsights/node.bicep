@@ -3,7 +3,7 @@ param subnetResId string
 param vmSize string
 param vmImage object
 param isLinux bool
-param vmDiskSizeInGB int = 64
+param vmDiskSizeInGB int = 128
 param userName string
 @secure()
 param password string
