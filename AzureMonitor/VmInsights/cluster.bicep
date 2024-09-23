@@ -7,7 +7,7 @@ param userName string
 @secure()
 param password string
 
-@description('By default, Azure Policy is used for setting up VM Insights.')
+@description('Azure Policy is the default and recommended way to setup VM Insights. But VM Insights can be setup in some other way. Use this parameter when Azure Policy is not preferred.')
 param noPolicy bool = false
 
 var location = resourceGroup().location
