@@ -76,7 +76,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   }
 }
 
-module linuxAMA 'ama-linux.bicep' = if (setupAMA && isLinux) {
+module linuxAMA '../Shared/ama-linux.bicep' = if (setupAMA && isLinux) {
   name: '${name}-linuxAMA'
   params: {
     dcrResId: dcrResId!
@@ -85,7 +85,7 @@ module linuxAMA 'ama-linux.bicep' = if (setupAMA && isLinux) {
   }
 }
 
-module windowsAMA 'ama-windows.bicep' = if (setupAMA && !isLinux) {
+module windowsAMA '../Shared/ama-windows.bicep' = if (setupAMA && !isLinux) {
   name: '${name}-windowsAMA'
   params: {
     dcrResId: dcrResId!
