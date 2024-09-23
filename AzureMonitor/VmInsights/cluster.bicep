@@ -30,7 +30,7 @@ module nodes '../Shared/node.bicep' = [for idx in range(1, vmCount): {
     subnetResId: vnet.outputs.subnetResId
     vmSize: vmSize
     vmImage: vmImage
-    isLinux: true
+    isLinux: vmOsType == 'linux'
     userName: userName
     password: password
     dcrResId: noPolicy ? monitor.outputs.dcrResId : null
