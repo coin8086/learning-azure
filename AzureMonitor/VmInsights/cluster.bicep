@@ -57,7 +57,7 @@ resource defaulSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
   }
 }
 
-module nodes 'node.bicep' = [for idx in range(1, vmCount): {
+module nodes '../Shared/node.bicep' = [for idx in range(1, vmCount): {
   name: 'node-${idx}'
   params: {
     name: 'node-${idx}'
