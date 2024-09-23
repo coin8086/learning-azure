@@ -10,7 +10,6 @@ param password string
 @description('Azure Policy is the default and recommended way to setup VM Insights. But VM Insights can be setup in some other way. Use this parameter when Azure Policy is not preferred.')
 param noPolicy bool = false
 
-var location = resourceGroup().location
 var vmImageMap = {
   windows: {
     publisher: 'MicrosoftWindowsServer'
@@ -37,31 +36,15 @@ module monitor 'azure-monitor.bicep' = {
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+module vnet '../Shared/vnet.bicep' = {
   name: 'vnet'
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.0.0.0/16'
-      ]
-    }
-  }
-}
-
-resource defaulSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
-  parent: vnet
-  name: 'default'
-  properties: {
-    addressPrefix: '10.0.0.0/22'
-  }
 }
 
 module nodes '../Shared/node.bicep' = [for idx in range(1, vmCount): {
   name: 'node-${idx}'
   params: {
     name: 'node-${idx}'
-    subnetResId: defaulSubnet.id
+    subnetResId: vnet.outputs.subnetResId
     vmSize: vmSize
     vmImage: vmImage
     isLinux: true
