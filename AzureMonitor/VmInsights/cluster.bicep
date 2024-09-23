@@ -1,4 +1,4 @@
-type OsType = 'windows' | 'linux'
+import { OsType, vmImageMap } from '../Shared/types-and-vars.bicep'
 
 param vmSize string = 'Standard_DS2_v2'
 param vmCount int = 2
@@ -10,23 +10,6 @@ param password string
 @description('Azure Policy is the default and recommended way to setup VM Insights. But VM Insights can be setup in some other way. Use this parameter when Azure Policy is not preferred.')
 param noPolicy bool = false
 
-var vmImageMap = {
-  windows: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2019-Datacenter'
-    version: 'latest'
-  }
-
-  //NOTE: the Dependency Extension doesn't support newer version of Ubuntu. So
-  //Ubuntu 20.04 is used here. It's the latest supported version for the extension.
-  linux: {
-    publisher: 'Canonical'
-    offer: '0001-com-ubuntu-server-focal'
-    sku: '20_04-lts'
-    version: 'latest'
-  }
-}
 var vmImage = vmImageMap[vmOsType]
 
 module monitor 'azure-monitor.bicep' = {
