@@ -2,6 +2,7 @@ param vmName string
 param location string = resourceGroup().location
 param dcrResId string
 param userMiResId string
+param installDependencyAgent bool = false
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' existing = {
   name: vmName
@@ -40,7 +41,7 @@ resource ma 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   ]
 }
 
-resource da 'Microsoft.Compute/virtualMachines/extensions@2024-03-01' = {
+resource da 'Microsoft.Compute/virtualMachines/extensions@2024-03-01' = if (installDependencyAgent) {
   parent: vm
   name: 'DependencyAgentWindows'
   location: location
